@@ -45,19 +45,28 @@ var rand = function(min, max) {
 };
 
 
+var randarray = function(min, max, len) {
+  len = len || 12;
+  var arr = [];
+  for (var i=0; i<len; ++i) {
+    arr.push(rand(min, max));
+  }
+  return arr;
+};
+
 var candleDataset = (function() {
   var a = [];
   var open = null;
-  var range = 50;
+  var range = 25;
   
-  for (var i=0; i<5; ++i) {
+  for (var i=0; i<12; ++i) {
     if (!open) {
-      var open = rand(40, 80);
+      var open = rand(50, 150);
     }
     else {
       open = close;
     }
-    var close = open + rand(-50, 50);
+    var close = open + rand(-range, range);
     var v1 = open + rand(-range, range);
     var v2 = open + rand(-range, range);
     var v3 = close + rand(-range, range);
@@ -79,40 +88,28 @@ var candleDataset = (function() {
 window.onload = function() {
   var g = new Graph({
     query: '#graph',
-    width: 360,
-    height: 240,
+    width: 640,
+    height: 480,
     max: 220,
     min: 0,
   });
   
   g.render();
-  // setTimeout(function() {
-  //   g.render([100, 200, 150, 120, 160]);
-  // }, 1000);
-  // setTimeout(function() {
-  //   g.render([200, 150, 10]);
-  // }, 2000);
+
+  g.element.on('mousedown', function() {
+    pathA.render(randarray(0, 200));
+    pathB.render(randarray(0, 200));
+  });
 
   var pathA = new Graph.Path({
     stroke: 'blue',
   }).addChildTo(g);
-  pathA.render([20, 40, 60, 80]);
-  setTimeout(function() {
-    pathA.render([120, 160, 80]);
-  }, 1000);
-  setTimeout(function() {
-    pathA.render([200, 150, 10]);
-  }, 2000);
-
+  pathA.render(randarray(0, 200));
 
   var pathB = new Graph.Path({
     stroke: 'red',
   }).addChildTo(g);
-  pathB.render([100, 200, 200, 150]);
-  setTimeout(function() {
-    pathB.render([80, 120, 55, 100]);
-  }, 1000);
-
+  pathB.render(randarray(0, 200));
 
   var candlestick = new Graph.Candlestick({
 

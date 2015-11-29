@@ -26,7 +26,7 @@ Graph.prototype = {
     this.axisY = this.element.append('g');
 
     this.scaleX = d3.scale.linear()
-      .domain([0, 3])
+      .domain([0, 11])
       .range([this.left, this.right])
       ;
     this.scaleY = d3.scale.linear()
@@ -185,6 +185,9 @@ Graph.Candlestick.prototype = {
   render: function(dataset) {
     var parent = this.parent;
 
+    var positive = 'blue';
+    var negative = 'red';
+
     // hige
     var hige = this.hige.selectAll('line').data(dataset);
     hige
@@ -196,7 +199,7 @@ Graph.Candlestick.prototype = {
         y1: function(d, i) { return parent.scaleY(d.low); },
         y2: function(d, i) { return parent.scaleY(d.high); },
         stroke: function(d, i) {
-          return (d.open < d.close) ? 'blue' : 'red';
+          return (d.open < d.close) ? positive : negative;
         },
       })
       ;
@@ -212,7 +215,7 @@ Graph.Candlestick.prototype = {
         y1: function(d, i) { return parent.scaleY(d.open); },
         y2: function(d, i) { return parent.scaleY(d.close); },
         stroke: function(d, i) {
-          return (d.open < d.close) ? 'blue' : 'red';
+          return (d.open < d.close) ? positive : negative;
         },
         'stroke-width': function(d, i) {
           return 10;
