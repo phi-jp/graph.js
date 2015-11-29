@@ -161,4 +161,63 @@ Graph.Path.prototype = {
   },
 };
 
+Graph.Candlestick = function(options) {
+  this.init(options);
+};
 
+Graph.Candlestick.prototype = {
+  init: function(options) {
+    this.parent = null;
+
+    this.options = options;
+  },
+
+  addChildTo: function(parent) {
+    parent.addChild(this);
+
+    this.g = this.parent.element.append('g');
+    this.real = this.g.append('g');
+    this.hige = this.g.append('g');
+
+    return this;
+  },
+
+  render: function(dataset) {
+    var parent = this.parent;
+
+    // hige
+    var hige = this.hige.selectAll('line').data(dataset);
+    hige
+      .enter()
+      .append('line')
+      .attr({
+        x1: function(d, i) { return parent.scaleX(i); },
+        x2: function(d, i) { return parent.scaleX(i); },
+        y1: function(d, i) { return parent.scaleY(d.low); },
+        y2: function(d, i) { return parent.scaleY(d.high); },
+        stroke: function(d, i) {
+          return (d.open < d.close) ? 'blue' : 'red';
+        },
+      })
+      ;
+
+    // real
+    var real = this.real.selectAll('line').data(dataset);
+    real
+      .enter()
+      .append('line')
+      .attr({
+        x1: function(d, i) { return parent.scaleX(i); },
+        x2: function(d, i) { return parent.scaleX(i); },
+        y1: function(d, i) { return parent.scaleY(d.open); },
+        y2: function(d, i) { return parent.scaleY(d.close); },
+        stroke: function(d, i) {
+          return (d.open < d.close) ? 'blue' : 'red';
+        },
+        'stroke-width': function(d, i) {
+          return 10;
+        },
+      })
+      ;
+  },
+};

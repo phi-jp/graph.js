@@ -39,6 +39,43 @@ svg {
 </style>
 
 <script>
+
+var rand = function(min, max) {
+  return Math.floor(Math.random()*(max-min)+min);
+};
+
+
+var candleDataset = (function() {
+  var a = [];
+  var open = null;
+  var range = 50;
+  
+  for (var i=0; i<20; ++i) {
+    if (!open) {
+      var open = rand(40, 80);
+    }
+    else {
+      open = close;
+    }
+    var close = open + rand(-50, 50);
+    var v1 = open + rand(-range, range);
+    var v2 = open + rand(-range, range);
+    var v3 = close + rand(-range, range);
+    var v4 = close + rand(-range, range);
+    var high = Math.max(open, close, v1, v2, v3, v4);
+    var low = Math.min(open, close, v1, v2, v3, v4);
+    a.push({
+      open: open,
+      close: close,
+      high: high,
+      low: low,
+    });
+  }
+  
+  return a;
+})();
+
+
 window.onload = function() {
   var g = new Graph({
     query: '#graph',
@@ -75,6 +112,13 @@ window.onload = function() {
   setTimeout(function() {
     pathB.render([80, 120, 55, 100]);
   }, 1000);
+
+
+  var candlestick = new Graph.Candlestick({
+
+  }).addChildTo(g);
+
+  candlestick.render(candleDataset);
 };
 </script>
 
