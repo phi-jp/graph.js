@@ -4,14 +4,16 @@ var Graph = function(options) {
 
 Graph.prototype = {
   init: function(options) {
-    this.svg = d3.select(options.query);
-    this.svg.attr({
+    this.element = d3.select(options.query);
+    this.element.attr({
       width: options.width,
       height: options.height,
     });
 
     this.width = options.width;
     this.height = options.height;
+    this.max = options.max;
+    this.min = options.min;
 
     var padding = 36;
     this.left = padding;
@@ -19,71 +21,40 @@ Graph.prototype = {
     this.top = padding;
     this.bottom = this.height-padding;
 
-    console.log(this);
+    this.path = this.element.append('path');
+    this.axisX = this.element.append('g');
+    this.axisY = this.element.append('g');
 
-    this.path = this.svg.append('path');
-    this.axisX = this.svg.append('g');
-    this.axisY = this.svg.append('g');
+    this.scaleX = d3.scale.linear()
+      .domain([0, 3])
+      .range([this.left, this.right])
+      ;
+    this.scaleY = d3.scale.linear()
+      .domain([this.max, this.min])
+      .range([this.top, this.bottom])
+      ;
 
     this.children = [];
   },
 
-  render: function(dataset) {
+  render: function() {
     var padding = 30;
-    var svg = this.svg;
+    var svg = this.element;
     var width = svg.attr('width');
     var height = svg.attr('height');
-    var max = d3.max(dataset);
-    var min = d3.min(dataset);
+
     var scaleX = d3.scale.linear()
-      .domain([0, dataset.length-1])
+      .domain([0, 12])
       .range([this.left, this.right])
       ;
     var scaleY = d3.scale.linear()
-      .domain([max, min])
+      .domain([this.max, this.min])
       .range([this.top, this.bottom])
       ;
 
     var line = d3.svg.line()
       .x(function(d, i) { return scaleX(i); })
       .y(function(d, i) { return scaleY(d); })
-      ;
-
-    this.path
-      .transition()
-      .duration(500)
-      .attr({
-        'd': line(dataset),
-        'stroke': 'blue',
-        'stroke-width': 3,
-        'fill': 'none',
-      })
-      ;
-    
-    // circle
-    var circles = svg.selectAll('circle').data(dataset);
-    // enter
-    circles
-      .enter()
-      .append('circle')
-      .attr('r', 5)
-      .attr('fill', 'white')
-      .attr('stroke', 'blue')
-      .attr('opacity', 1.0)
-      ;
-    // exit
-    circles
-      .exit()
-      .transition()
-      .duration(500)
-      .attr('opacity', 0.0)
-      .remove();
-    // update
-    circles
-      .transition()
-      .duration(500)
-      .attr('cx', line.x())
-      .attr('cy', line.y())
       ;
     
     // axis
@@ -134,7 +105,7 @@ Graph.Path.prototype = {
   addChildTo: function(parent) {
     parent.addChild(this);
 
-    this.g = this.parent.svg.append('g');
+    this.g = this.parent.element.append('g');
     this.path = this.g.append('path');
 
     return this;
@@ -142,22 +113,15 @@ Graph.Path.prototype = {
 
   render: function(dataset) {
     var parent = this.parent;
-    var max = d3.max(dataset);
-    var min = d3.min(dataset);
-    var scaleX = d3.scale.linear()
-      .domain([0, dataset.length-1])
-      .range([parent.left, parent.right])
-      ;
-    var scaleY = d3.scale.linear()
-      .domain([max, min])
-      .range([parent.top, parent.bottom])
-      ;
 
     var line = d3.svg.line()
-      .x(function(d, i) { return scaleX(i); })
-      .y(function(d, i) { return scaleY(d); })
+      .x(function(d, i) { return parent.scaleX(i); })
+      .y(function(d, i) { return parent.scaleY(d); })
       ;
     this.path
+      .attr({
+        'stroke': this.options.stroke,
+      })
       .transition()
       .duration(500)
       .attr({
@@ -185,7 +149,8 @@ Graph.Path.prototype = {
       .transition()
       .duration(500)
       .attr('opacity', 0.0)
-      .remove();
+      .remove()
+      ;
     // update
     circles
       .transition()
