@@ -1,0 +1,90 @@
+<!doctype html>
+ 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <title>graph.js</title>
+    <meta name="description" content="${description}" />
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.js'></script>
+    
+    <script src='../graph.js'></script>
+  </head>
+  <body>
+    <svg id='graph'></svg>
+  </body>
+</html>
+
+<style>
+*, *:before, *:after {
+  box-sizing: border-box; 
+}
+html {
+  font-size: 62.5%;
+}
+body {
+  color: #444;
+  background-color: hsl(0, 0%, 96%);
+}
+h1 {
+  font-size: 1.8rem;
+}
+
+svg {
+  background-color: white;
+}
+</style>
+
+<script>
+window.onload = function() {
+  var g = new Graph({
+    query: '#graph',
+    width: 360,
+    height: 240,
+  });
+  
+  // g.render([0, 0, 0, 0, 1]);
+  // setTimeout(function() {
+  //   g.render([100, 200, 150, 120, 160]);
+  // }, 1000);
+  // setTimeout(function() {
+  //   g.render([200, 150, 10]);
+  // }, 2000);
+
+  var pathA = new Graph.Path({
+    stroke: 'blue',
+  }).addChildTo(g);
+  pathA.render([20, 40, 60, 80]);
+  setTimeout(function() {
+    pathA.render([120, 160, 80]);
+  }, 1000);
+  setTimeout(function() {
+    pathA.render([200, 150, 10]);
+  }, 2000);
+
+
+  var pathB = new Graph.Path({
+    stroke: 'red'
+  }).addChildTo(g);
+  pathB.render([100, 200, 200, 150]);
+  setTimeout(function() {
+    pathB.render([80, 120, 55, 100]);
+  }, 1000);
+};
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
