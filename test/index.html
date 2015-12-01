@@ -15,6 +15,12 @@
   </head>
   <body>
     <svg id='graph'></svg>
+
+    <ul>
+      <li>a</li>
+      <li>b</li>
+      <li>c</li>
+    </ul>
   </body>
 </html>
 
@@ -116,6 +122,31 @@ window.onload = function() {
   }).addChildTo(g);
 
   candlestick.render(candleDataset);
+
+
+
+  d3.selection.prototype.hoge = function() {
+    // this.each(function() {
+    //   debugger;
+    // });
+    console.log('hoge');
+    return this;
+  };
+
+  d3.selection.prototype.line = function() {
+    var g = this.append('g');
+
+    return g;
+  };
+
+  var body = d3.select('body');
+  var list = body.selectAll('li');
+
+  var g = body.append('g');
+
+
+  var d = list.hoge().html();
+  console.log(d);
 };
 </script>
 
