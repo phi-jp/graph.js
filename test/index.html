@@ -16,6 +16,7 @@
   <body>
     <svg id='graph'></svg>
 
+    <svg id='graph2'></svg>
     <ul>
       <li>a</li>
       <li>b</li>
@@ -142,11 +143,17 @@ window.onload = function() {
   var body = d3.select('body');
   var list = body.selectAll('li');
 
-  var g = body.append('g');
 
 
   var d = list.hoge().html();
   console.log(d);
+
+  // test axis like
+  var svg = d3.select('#graph2');
+  var g = svg.append('g');
+  var line = d3.svg.chart.line().data([100, 200, 300]);
+
+  g.call(line);
 };
 </script>
 

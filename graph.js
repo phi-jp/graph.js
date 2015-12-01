@@ -224,3 +224,77 @@ Graph.Candlestick.prototype = {
       ;
   },
 };
+
+
+d3.svg.chart = {};
+
+
+d3.svg.chart.line = function() {
+  var _data = [];
+  var _path = null;
+  var _scaleX = d3.scale.linear()
+    .domain([0, 11])
+    .range([0, 100])
+    ;
+
+  var _scaleY = d3.scale.linear()
+    .domain([0, 11])
+    .range([0, 300])
+    ;
+
+  var chart = function(g) {
+    g.each(function(v) {
+      var g = d3.select(this);
+
+      if (!_path) {
+        _path = g.append('path');
+      }
+
+      var line = d3.svg.line()
+        .x(function(d, i) { return _scaleX(i); })
+        .y(function(d, i) { return _scaleY(d); })
+        ;
+
+      _path
+        .transition()
+        .duration(500)
+        .attr({
+          d: line(_data),
+          stroke: 'red',
+        })
+        ;
+
+      // var line = d3.svg.line()
+      //   .x(function(d, i) { return parent.scaleX(i); })
+      //   .y(function(d, i) { return parent.scaleY(d); })
+      //   ;
+      // this.path
+      //   .attr({
+      //     'stroke': this.options.stroke,
+      //   })
+      //   .transition()
+      //   .duration(500)
+      //   .attr({
+      //     'd': line(dataset),
+      //     'stroke': this.options.stroke,
+      //     'stroke-width': 3,
+      //     'fill': 'none',
+      //   })
+      //   ;
+
+    });
+  };
+
+  chart.data = function(d) {
+    if (!arguments.length) return _data;
+
+    _data = d;
+    return this;
+  };
+
+  return chart;
+};
+
+
+
+
